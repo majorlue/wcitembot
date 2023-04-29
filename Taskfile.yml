@@ -1,0 +1,61 @@
+# https://taskfile.dev
+# Install via npm install -g @go-task/cli
+
+version: '3'
+
+vars:
+  # 'local', 'development', 'production'
+  ENV: local
+
+# TODO: set .env file paths here
+dotenv: ['.env.{{.ENV}}']
+
+silent: true
+
+tasks:
+  default: task --list
+
+  # - - - Project commands - - -
+  clean:
+    desc: Removes build/ directory.
+    deps: [npm-install]
+    cmds:
+      - npm run clean
+
+  lint:
+    desc: Fixes any auto-fixable style issues and lints the project.
+    deps: [npm-install]
+    cmds:
+      - npm run fix
+      - npm run lint
+
+  build:
+    desc: Transpile TypeScript and copy any other required runtime files.
+    deps: [npm-install]
+    cmds:
+      - npm run build
+
+  watch:
+    desc: Start server instance and watch for TypeScript file changes.
+    deps: [npm-install]
+    cmds:
+      - npm run watch
+
+  start:
+    desc: Runs server instance as active process in the current terminal.
+    deps: [npm-install]
+    cmds:
+      - npm run start
+
+  # - - - Custom Scripts - - -
+
+  custom-script:
+    desc: Run custom script using env file. Requires the script name to be passed in.
+    cmds:
+      - npx ts-node devops/{{.CLI_ARGS}}
+
+  npm-install:
+    internal: true
+    desc: Install node modules
+    cmds:
+      - npm install
